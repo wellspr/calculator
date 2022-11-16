@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+//$font-family: 'Nanum Gothic', sans-serif;
+
+@import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
+//$font-family-: 'Michroma', sans-serif;
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap');
+//$font-family-display: 'Source Code Pro', monospace;
+
+$font-family-body: 'Nanum Gothic', sans-serif;
+$font-family-display: 'Source Code Pro', monospace;
+$font-family-buttons: 'Michroma', sans-serif;
+
+$max-width: 700px;
+
+$font-size-input: 3.5rem;
+$font-size-value: 2.5rem;
+$font-size-control-buttons: 2.5rem;
+
+// Colors
+$color-background-app: #FEFBE7;
+$color-background-config: #FEFBE7;
+
+$color-background-input: rgba(#f9ebc8, 0.4);
+$color-border-input: #A19882;
+$color-input-text: #2C3333;
+
+$color-text-light: #2C3333;
+
+$color-background-control-button: rgba(#f9ebc8, 0.65);
+
+$color-background-menu-button: rgba(white, 0);
+$color-menu-button-text: #2C3333;
+
+// Colors - Dark mode
+$color-background-app-dark: #2C3333;
+$color-text-dark: #E7F6F2;
+$color-input-text-dark: #E7F6F2;
+
+//$color-background-input: #395B64;
+
+
+@mixin row-centered{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin col-centered{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+*,
+::after,
+::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: $font-family-body;
+    font-size: 1.8rem;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+@mixin header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: $max-width;
+    height: 4rem;
+    margin-top: 1rem;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 0 1rem;
+    background-color: $color-background-app;
+    color: $color-text-light;
+
+    &__dark-mode {
+        background-color: $color-background-app-dark;
+        color: $color-text-dark;
+    }
+
+    &__header {
+        @include header();
+
+        //&__heading {}
+    }
+}
+
+.panel {
+    @include col-centered();
+    width: 100%;
+    max-width: $max-width;
+
+    &__input {
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+        border: solid 1px $color-border-input;
+        margin-bottom: 0.4rem;
+        color: $color-input-text;
+
+        &__dark-mode {
+            color: $color-input-text-dark;
+        }
+        
+        & .ql-editor {
+
+            p {                
+                font-size: $font-size-input;
+                margin: 0;
+                padding: 10px;
+                line-height: normal;
+                background-color: $color-background-input;
+                font-family: $font-family-display;
+                color: inherit;
+            }
+        }
+    }
+
+    &__expression,
+    &__value 
+    {
+        margin: 10px;
+        margin-left: 12px;
+        font-size: $font-size-value;
+        width: 100%;        
+        overflow: scroll;
+    }
+}
+
+.controls {
+    width: 100%;
+
+    &__row {
+        display: flex;
+        justify-content: center;
+    }
+    
+    &__button {
+        @include row-centered();
+
+        font-family: $font-family-buttons;
+        font-size: $font-size-control-buttons;
+        
+        width: 25%;
+        margin: 0.2rem;
+        padding: 1rem;
+
+        background-color: $color-background-control-button;
+        border: none;
+
+        &__dark-mode {
+            color: $color-text-dark;
+        }
+
+        &:hover {
+            background-color: rgba($color-background-control-button, 0.85);
+        }
+    }
+}
+
+.exponential {
+    display: flex;
+
+    &__base {
+        font-size: $font-size-control-buttons;
+    }
+
+    &__operator {
+        font-size: calc($font-size-control-buttons * 0.6);
+    }
+
+    &__exponent {
+        font-size: calc($font-size-control-buttons * 0.6);
+    }
+}
+
+.config {
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    
+    width: 100vw;
+    height: 100%;
+
+    padding: 0 1rem;
+    
+    background-color: $color-background-config;
+
+    transition: all 1s ease-in-out;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &__header {
+        @include header();
+
+        //&__heading {}
+    }
+
+    &__main {
+        width: 100%;
+        max-width: $max-width;
+
+        &__option {
+            display: flex;
+            margin: 2rem; 
+
+            &__label {
+                margin-right: 1rem;
+            }
+        }
+
+        &__precision {
+
+            &__input {
+                width: 5rem;
+            }
+        } 
+
+        &__dark-mode {
+
+            &__input {
+                display: flex;
+
+                &__on, &__off {
+                    cursor: pointer;
+                }
+                
+                &__toggle-icon {
+                    margin: 0 1rem;
+                    cursor: pointer;
+                }
+            }   
+        }        
+    }
+
+    &__show-portal {
+        left: 0;
+    }
+
+    &__hide-portal {
+        left: -100vw;
+    }
+
+    &__dark-mode {
+        background-color: $color-background-app-dark;
+        color: $color-text-dark;
+    }
+}
+
+.menu {
+    &__button {
+        @include row-centered();
+        background-color: $color-background-menu-button;
+        color: inherit;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+}
+
+.footer {
+    margin: 10px 0;
+
+    &__copy {
+        font-size: 1rem;
+        @include row-centered();
+
+        &__icon {
+            @include row-centered();
+            margin: 0 2px;
+        }
+    }
+}
+
+.horizontal-rule {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+
+    &__dark-mode {
+        color: white;
+    }
+}
+
+// https://stackoverflow.com/a/68538644
+// To prevent grammarly on this website
+[contenteditable] ~ grammarly-extension,
+input ~ grammarly-extension,
+textarea ~ grammarly-extension {
+  display: none;
+}
