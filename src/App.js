@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IoHeart } from "react-icons/io5";
+import { IoHeart, IoLogoGithub } from "react-icons/io5";
 import Calculator from "./Calculator";
 import Config from "./Config";
 
@@ -37,8 +37,19 @@ const App = () => {
         <footer className="footer">
             <p className="footer__copy">
                 &copy; {year} - Made with 
-                <span className="footer__copy__icon"><IoHeart /></span> 
+                <span className="footer__copy__icon footer__copy__icon--heart">
+                    <IoHeart />
+                </span> 
                 by Paulo Wells.
+                <a 
+                    href="https://github.com/wellspr/calculator" 
+                    target="_blank" 
+                    rel="noreferrer"
+                    >
+                    <span className="footer__copy__icon footer__copy__icon--github">
+                        <IoLogoGithub />
+                    </span>
+                </a>
             </p>
         </footer>
     </div>

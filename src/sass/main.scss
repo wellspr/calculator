@@ -285,14 +285,23 @@ body {
 
 .footer {
     margin: 10px 0;
-
+    
     &__copy {
-        font-size: 1rem;
+        font-size: 1.2rem;
         @include row-centered();
-
+        
         &__icon {
             @include row-centered();
-            margin: 0 2px;
+            margin: 0 3px;
+
+            &--heart {
+                font-size: 1.4rem;
+            }
+
+            &--github {
+                font-size: 1.6rem;
+                margin-left: 1rem;
+            }
         }
     }
 }
