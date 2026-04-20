@@ -6,12 +6,34 @@ import { useState, useEffect } from "react";
 import { useProcessedExpression } from "@/hooks/useProcessedExpression";
 import Controls from "./Controls";
 //import { Delta } from "quill/core";
+import type { QuillOptions } from "quill";
 
 const useQuillEditor = () => {
     const { quill, quillRef } = useQuill({
         theme: "bubble",
-        modules: { toolbar: false },
-    });
+        modules: { 
+            toolbar: false, 
+            keyboard: {
+                bindings: {
+                    // Disable space key to prevent unwanted spaces in the expression
+                    space: {
+                        key: " ",
+                        handler: () => false,
+                    },
+                    // Disable Enter key to prevent new lines in the expression
+                    enter: {
+                        key: "Enter",
+                        handler: () => false,
+                    },
+                    tab: {
+                        key: "Tab",
+                        handler: () => false,
+                    }
+                },
+            }
+        },
+        formats: [],
+    } as QuillOptions);
     return { quill, quillRef };
 };
 
@@ -28,7 +50,7 @@ export const Calculator = ({
     const [expression, setExpression] = useState("");
     const { value } = useProcessedExpression(expression, precision);
 
-/*     useEffect(() => {
+    /*     useEffect(() => {
         console.log(window);
 
         // https://stackoverflow.com/a/11381730
@@ -59,6 +81,19 @@ export const Calculator = ({
             }
         }
     }, [quill, quillRef]); */
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Space") {
+                event.preventDefault();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     useEffect(() => {
         if (quill) {
@@ -72,7 +107,7 @@ export const Calculator = ({
         }
     }, [quill]);
 
-   /*  useEffect(() => {
+    /*  useEffect(() => {
         if (quill) {
             const handleSelection = (range: Range) => {
                 console.log("selection: ", range);
