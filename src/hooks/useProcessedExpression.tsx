@@ -90,7 +90,7 @@ math.import([
     evaluateDependencies,
 ]);
 
-const evaluate = (expression: string): ResultSet => {
+export const evaluate = (expression: string): ResultSet => {
     const node = math.parse(expression);
 
     const allowedFunctions = [
@@ -155,76 +155,104 @@ const evaluate = (expression: string): ResultSet => {
             );
         }
     });
+
+    //console.log("Funções carregadas:", Object.keys(math));
+
     return node.compile().evaluate();
 };
 
 export const useProcessedExpression = (
     expression: string,
     precision: number,
-) => {
-
+): { expressionString: string; value: string } => {
     let value = "";
 
+    const response = { expressionString: "", value };
+
+    if (expression.length === 0) {
+        console.log("Expression is empty: ", expression);
+        return response;
+    }
+
     if (expression.length > 500) {
-        return { expressionString: "", value: "Expressão muito longa" };
+        value = "Expressão muito longa";
+        return { ...response, value };
     }
 
     const expressionString = expression.replace(
         /[^a-zA-Z0-9+\-*/^().,\s]/g,
         "",
     );
-    
-    try {
-        const result = evaluate(expressionString).entries[0];
 
-        if (result === undefined || result === null) {
-            value = "";
-            return { expressionString, value };
+    response.expressionString = expressionString;
+
+    try {
+        const evaluatedExpression = evaluate(expressionString);
+
+        if (evaluatedExpression === undefined) {
+            return response;
         }
+
+        const result = evaluatedExpression.entries
+            ? evaluatedExpression.entries[0]
+            : evaluatedExpression;
+
+        console.log("Evaluated expression: ", result);
 
         if (typeof result === "number") {
-            value = math.round(Number(result), precision).toString();
-            return { expressionString, value };
-        }
 
-        if (typeof result === "object" && "re" in result && "im" in result) {
-            const complexResult = result as Complex;
-            const roundedRe = math.round(complexResult.re, precision);
-            const roundedIm = math.round(complexResult.im, precision);
-
-            if (roundedRe !== 0) {
-                value += `${roundedRe}`;
+            if (!isFinite(result)) {
+                value = "Erro: divisão por zero ou resultado infinito";
+                return { ...response, value };
             }
 
-            if (roundedIm === 0) {
-                if (roundedRe === 0) {
-                    value = "0";
+            return {
+                ...response,
+                value: math.round(Number(result), precision).toString(),
+            };
+        }
+
+        if (result !== null && typeof result === "object") {
+            if ("re" in result && "im" in result) {
+                const complexResult = result as Complex;
+                const roundedRe = math.round(complexResult.re, precision);
+                const roundedIm = math.round(complexResult.im, precision);
+
+                if (roundedRe !== 0) {
+                    value += `${roundedRe}`;
                 }
 
-                return { expressionString, value };
-            }
+                if (roundedIm === 0) {
+                    if (roundedRe === 0) {
+                        value = "0";
+                    }
+                    return { ...response, value };
+                }
 
-            if (roundedIm < 0) {
-                value += "-";
-            } else {
-                value += "+";
-            }
+                if (roundedIm < 0) {
+                    value += "-";
+                } else if (roundedIm > 0 && roundedRe !== 0) {
+                    value += "+";
+                }
 
-            if (math.abs(roundedIm) === 1) {
-                value += `i`;
-            } else {
-                value += `${math.abs(roundedIm)}i`;
-            }
+                if (math.abs(roundedIm) === 1) {
+                    value += `i`;
+                } else {
+                    value += `${math.abs(roundedIm)}i`;
+                }
 
-            return { expressionString, value };
-        }
+                return { ...response, value };
+            }
+        } 
     } catch (e) {
         if (e instanceof Error) {
             console.log("Expression error: ", e.message);
+            response.value = "";
         } else {
             console.log("Expression error: ", e);
+            response.value = "";
         }
     }
 
-    return { expressionString, value };
+    return response;
 };

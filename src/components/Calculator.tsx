@@ -50,6 +50,9 @@ export const Calculator = ({
     const [expression, setExpression] = useState("");
     const { value } = useProcessedExpression(expression, precision);
 
+    useEffect(() => {
+        console.log("Expression: ", expression, "Value: ", value);
+    }, [value]);
     /*     useEffect(() => {
         console.log(window);
 
